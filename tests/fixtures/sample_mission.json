@@ -1,0 +1,48 @@
+{
+  "schema_version": "wyvern.mission.v1",
+  "mission_id": "mis_test_001",
+  "trace_id": "trc_test_001",
+  "vehicle_id": "veh_px4_sitl_001",
+  "mission_type": "point_inspection",
+  "autonomy_level": "L2_supervised",
+  "requested_by": {
+    "principal_id": "usr_operator_001",
+    "role": "operator"
+  },
+  "approval": {
+    "status": "draft"
+  },
+  "geofence": {
+    "type": "polygon",
+    "coordinates": [
+      [-71.11, 42.29],
+      [-71.09, 42.29],
+      [-71.09, 42.31],
+      [-71.11, 42.31]
+    ]
+  },
+  "route": {
+    "waypoints": [
+      {"seq": 1, "lat": 42.3002, "lon": -71.1000, "alt_m": 22.0, "hold_s": 2},
+      {"seq": 2, "lat": 42.3005, "lon": -71.0997, "alt_m": 24.0, "hold_s": 5},
+      {"seq": 3, "lat": 42.3003, "lon": -71.0995, "alt_m": 22.0, "hold_s": 0}
+    ]
+  },
+  "constraints": {
+    "max_altitude_m": 30.0,
+    "min_battery_percent": 25.0,
+    "telemetry_freshness_ms": 1500,
+    "mission_timeout_s": 600,
+    "link_loss_policy": "rtl",
+    "rtl_policy": "immediate_on_critical",
+    "start_mode": "guided"
+  },
+  "regulatory": {
+    "operation_type": "part107",
+    "remote_id_required": true,
+    "remote_id_status": "active",
+    "airspace_authorization_ref": "laanc_auth_test_001",
+    "observer_required": false
+  },
+  "created_at": "2026-03-27T12:00:00Z"
+}
