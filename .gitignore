@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# Rust
+target/
+Cargo.lock
+
+# Claude
+CLAUDE.md
+.claude/
+
+# TDD specs (source of truth in BanterPacks)
+docs/tdd/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.hypothesis/
+
+# Simulation
+logs/
+*.log
+*.bag
+*.db3
+
+# Node (if needed for tooling)
+node_modules/
+
+# Build artifacts
+*.so
+*.dylib
+*.dll

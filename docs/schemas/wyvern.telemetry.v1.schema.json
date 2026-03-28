@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "wyvern.telemetry.v1.schema.json",
+  "title": "Wyvern Telemetry v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "trace_id",
+    "mission_id",
+    "vehicle_id",
+    "timestamp",
+    "vehicle_state",
+    "position",
+    "velocity",
+    "health",
+    "mission_progress"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "wyvern.telemetry.v1"
+    },
+    "event_id": {
+      "type": "string"
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "mission_id": {
+      "type": "string"
+    },
+    "vehicle_id": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "vehicle_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "armed",
+        "in_air"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string"
+        },
+        "armed": {
+          "type": "boolean"
+        },
+        "in_air": {
+          "type": "boolean"
+        }
+      }
+    },
+    "position": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lat",
+        "lon",
+        "alt_m"
+      ],
+      "properties": {
+        "lat": {
+          "type": "number"
+        },
+        "lon": {
+          "type": "number"
+        },
+        "alt_m": {
+          "type": "number"
+        }
+      }
+    },
+    "velocity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ground_speed_mps",
+        "vertical_speed_mps"
+      ],
+      "properties": {
+        "ground_speed_mps": {
+          "type": "number"
+        },
+        "vertical_speed_mps": {
+          "type": "number"
+        }
+      }
+    },
+    "health": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "battery_percent",
+        "gps_fix",
+        "telemetry_age_ms",
+        "link_quality",
+        "estimator_status"
+      ],
+      "properties": {
+        "battery_percent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "gps_fix": {
+          "type": "string"
+        },
+        "telemetry_age_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "link_quality": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "estimator_status": {
+          "type": "string"
+        }
+      }
+    },
+    "mission_progress": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "current_waypoint",
+        "waypoints_total"
+      ],
+      "properties": {
+        "state": {
+          "type": "string"
+        },
+        "current_waypoint": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "waypoints_total": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

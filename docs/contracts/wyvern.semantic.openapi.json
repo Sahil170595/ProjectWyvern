@@ -1,0 +1,197 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Wyvern Semantic Tasking API",
+    "version": "1.0.0",
+    "description": "Semantic perception, world-state, and tasking contract for TDD-007."
+  },
+  "servers": [
+    {
+      "url": "https://wyvern-semantic.internal"
+    }
+  ],
+  "components": {
+    "parameters": {
+      "TaskId": {
+        "name": "task_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "ObjectId": {
+        "name": "object_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "MissionId": {
+        "name": "mission_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "schemas": {
+      "SceneObject": {
+        "$ref": "../schemas/wyvern.scene_object.v1.schema.json"
+      },
+      "WorldState": {
+        "$ref": "../schemas/wyvern.world_state.v1.schema.json"
+      },
+      "SemanticTask": {
+        "$ref": "../schemas/wyvern.semantic_task.v1.schema.json"
+      },
+      "ClarificationRequest": {
+        "type": "object",
+        "required": [
+          "task_id",
+          "trace_id",
+          "ambiguity_status",
+          "candidate_refs"
+        ],
+        "properties": {
+          "task_id": {
+            "type": "string"
+          },
+          "trace_id": {
+            "type": "string"
+          },
+          "ambiguity_status": {
+            "type": "string",
+            "enum": [
+              "needs_confirmation",
+              "unsafe_to_act"
+            ]
+          },
+          "candidate_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/v1/semantic/tasks": {
+      "post": {
+        "operationId": "createSemanticTask",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SemanticTask"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Semantic task created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SemanticTask"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/semantic/tasks/{task_id}": {
+      "get": {
+        "operationId": "getSemanticTask",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/TaskId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Semantic task",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SemanticTask"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/world-state/{mission_id}": {
+      "get": {
+        "operationId": "getWorldState",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/MissionId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "World-state snapshot",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorldState"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/scene-objects/{object_id}": {
+      "get": {
+        "operationId": "getSceneObject",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ObjectId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scene object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SceneObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/semantic/clarifications": {
+      "post": {
+        "operationId": "createClarificationRequest",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClarificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Clarification request created"
+          }
+        }
+      }
+    }
+  }
+}

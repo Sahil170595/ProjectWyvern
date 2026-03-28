@@ -1,0 +1,446 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ChimeraWyvern API",
+    "version": "1.0.0",
+    "description": "Mission, vehicle, and replay API for ChimeraWyvern."
+  },
+  "servers": [
+    {
+      "url": "https://wyvern.internal"
+    }
+  ],
+  "components": {
+    "parameters": {
+      "MissionId": {
+        "name": "mission_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "VehicleId": {
+        "name": "vehicle_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "IdempotencyKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "description": "Required for state-changing commands in production deployments."
+      }
+    },
+    "schemas": {
+      "Mission": {
+        "$ref": "../schemas/wyvern.mission.v1.schema.json"
+      },
+      "TelemetryEvent": {
+        "$ref": "../schemas/wyvern.telemetry.v1.schema.json"
+      },
+      "ReplayArtifact": {
+        "$ref": "../schemas/wyvern.replay.v1.schema.json"
+      },
+      "MissionCommandResult": {
+        "type": "object",
+        "required": [
+          "mission_id",
+          "trace_id",
+          "state",
+          "reason_code"
+        ],
+        "properties": {
+          "mission_id": {
+            "type": "string"
+          },
+          "trace_id": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "reason_code": {
+            "type": "string"
+          },
+          "effective_authority": {
+            "type": "string"
+          }
+        }
+      },
+      "ValidationResult": {
+        "type": "object",
+        "required": [
+          "mission_id",
+          "trace_id",
+          "passed",
+          "checks"
+        ],
+        "properties": {
+          "mission_id": {
+            "type": "string"
+          },
+          "trace_id": {
+            "type": "string"
+          },
+          "passed": {
+            "type": "boolean"
+          },
+          "checks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "status"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "passed",
+                    "failed",
+                    "warning"
+                  ]
+                },
+                "reason_code": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "error",
+          "reason_code",
+          "trace_id"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "reason_code": {
+            "type": "string"
+          },
+          "trace_id": {
+            "type": "string"
+          },
+          "mission_id": {
+            "type": "string"
+          },
+          "vehicle_id": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responses": {
+      "ErrorResponse": {
+        "description": "Machine-readable error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/v1/missions": {
+      "post": {
+        "operationId": "createMission",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Mission"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Mission created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Mission"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        }
+      }
+    },
+    "/api/v1/missions/{mission_id}/validate": {
+      "post": {
+        "operationId": "validateMission",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/MissionId"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Validation completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        }
+      }
+    },
+    "/api/v1/missions/{mission_id}/approve": {
+      "post": {
+        "operationId": "approveMission",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/MissionId"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mission approved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionCommandResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/missions/{mission_id}/execute": {
+      "post": {
+        "operationId": "executeMission",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/MissionId"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mission execution accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionCommandResult"
+                }
+              }
+            }
+          },
+          "409": {
+            "$ref": "#/components/responses/ErrorResponse"
+          }
+        }
+      }
+    },
+    "/api/v1/missions/{mission_id}/pause": {
+      "post": {
+        "operationId": "pauseMission",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/MissionId"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pause acknowledged",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionCommandResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/missions/{mission_id}/resume": {
+      "post": {
+        "operationId": "resumeMission",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/MissionId"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resume acknowledged",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionCommandResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/missions/{mission_id}/rtl": {
+      "post": {
+        "operationId": "rtlMission",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/MissionId"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "RTL acknowledged",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionCommandResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/missions/{mission_id}/abort": {
+      "post": {
+        "operationId": "abortMission",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/MissionId"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Abort acknowledged",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionCommandResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/missions/{mission_id}": {
+      "get": {
+        "operationId": "getMission",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/MissionId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Mission"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/missions/{mission_id}/timeline": {
+      "get": {
+        "operationId": "getMissionTimeline",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/MissionId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Replay artifact",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplayArtifact"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vehicles/{vehicle_id}/telemetry": {
+      "get": {
+        "operationId": "getVehicleTelemetry",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/VehicleId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Latest telemetry event",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelemetryEvent"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

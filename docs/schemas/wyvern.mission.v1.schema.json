@@ -1,0 +1,257 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "wyvern.mission.v1.schema.json",
+  "title": "Wyvern Mission v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "mission_id",
+    "trace_id",
+    "vehicle_id",
+    "mission_type",
+    "autonomy_level",
+    "requested_by",
+    "approval",
+    "geofence",
+    "route",
+    "constraints",
+    "regulatory",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "wyvern.mission.v1"
+    },
+    "mission_id": {
+      "type": "string"
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "vehicle_id": {
+      "type": "string"
+    },
+    "mission_type": {
+      "type": "string",
+      "enum": [
+        "takeoff_land",
+        "waypoint_patrol",
+        "point_inspection",
+        "route_follow",
+        "orbit_target",
+        "return_to_launch",
+        "area_survey",
+        "asset_inspection",
+        "dock_depart",
+        "dock_return",
+        "escort_follow",
+        "multi_vehicle_sweep"
+      ]
+    },
+    "autonomy_level": {
+      "type": "string",
+      "enum": [
+        "L0_manual",
+        "L1_assisted",
+        "L2_supervised",
+        "L3_coordinated"
+      ]
+    },
+    "requested_by": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "principal_id",
+        "role"
+      ],
+      "properties": {
+        "principal_id": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "awaiting_approval",
+            "approved",
+            "rejected"
+          ]
+        },
+        "approved_by": {
+          "type": "string"
+        },
+        "approved_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "geofence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "coordinates"
+      ],
+      "properties": {
+        "type": {
+          "const": "polygon"
+        },
+        "coordinates": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "waypoints"
+      ],
+      "properties": {
+        "waypoints": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "seq",
+              "lat",
+              "lon",
+              "alt_m"
+            ],
+            "properties": {
+              "seq": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "lat": {
+                "type": "number"
+              },
+              "lon": {
+                "type": "number"
+              },
+              "alt_m": {
+                "type": "number"
+              },
+              "hold_s": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_altitude_m",
+        "min_battery_percent",
+        "telemetry_freshness_ms",
+        "mission_timeout_s",
+        "link_loss_policy",
+        "rtl_policy",
+        "start_mode"
+      ],
+      "properties": {
+        "max_altitude_m": {
+          "type": "number"
+        },
+        "min_battery_percent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "telemetry_freshness_ms": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "mission_timeout_s": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "link_loss_policy": {
+          "type": "string",
+          "enum": [
+            "hold",
+            "rtl",
+            "land"
+          ]
+        },
+        "rtl_policy": {
+          "type": "string"
+        },
+        "start_mode": {
+          "type": "string"
+        }
+      }
+    },
+    "regulatory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operation_type",
+        "remote_id_required",
+        "remote_id_status",
+        "observer_required"
+      ],
+      "properties": {
+        "operation_type": {
+          "type": "string"
+        },
+        "remote_id_required": {
+          "type": "boolean"
+        },
+        "remote_id_status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "inactive",
+            "unknown"
+          ]
+        },
+        "airspace_authorization_ref": {
+          "type": "string"
+        },
+        "observer_required": {
+          "type": "boolean"
+        }
+      }
+    },
+    "payload": {
+      "type": "object"
+    },
+    "risk": {
+      "type": "object"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

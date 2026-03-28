@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "wyvern.scene_object.v1.schema.json",
+  "title": "Wyvern Scene Object v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "object_id",
+    "trace_id",
+    "vehicle_id",
+    "class",
+    "confidence",
+    "pose_frame",
+    "position_estimate",
+    "observed_at",
+    "freshness_ms"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "wyvern.scene_object.v1"
+    },
+    "object_id": {
+      "type": "string"
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "vehicle_id": {
+      "type": "string"
+    },
+    "class": {
+      "type": "string"
+    },
+    "attributes": {
+      "type": "object"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "pose_frame": {
+      "type": "string"
+    },
+    "position_estimate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "x_m",
+        "y_m",
+        "z_m"
+      ],
+      "properties": {
+        "x_m": {
+          "type": "number"
+        },
+        "y_m": {
+          "type": "number"
+        },
+        "z_m": {
+          "type": "number"
+        }
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "freshness_ms": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

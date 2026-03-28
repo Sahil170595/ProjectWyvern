@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "wyvern.replay.v1.schema.json",
+  "title": "Wyvern Replay Artifact v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "mission_id",
+    "trace_id",
+    "mission_hash",
+    "approval_hash",
+    "validation_hash",
+    "timeline_ref",
+    "telemetry_ref",
+    "summary"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "wyvern.replay.v1"
+    },
+    "mission_id": {
+      "type": "string"
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "mission_hash": {
+      "type": "string"
+    },
+    "approval_hash": {
+      "type": "string"
+    },
+    "validation_hash": {
+      "type": "string"
+    },
+    "timeline_ref": {
+      "type": "string"
+    },
+    "telemetry_ref": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "terminal_state",
+        "operator_interventions",
+        "constraint_violations"
+      ],
+      "properties": {
+        "terminal_state": {
+          "type": "string"
+        },
+        "operator_interventions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "constraint_violations": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

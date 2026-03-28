@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "wyvern.semantic_task.v1.schema.json",
+  "title": "Wyvern Semantic Task v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "task_id",
+    "trace_id",
+    "mission_id",
+    "task_class",
+    "requested_by",
+    "grounding",
+    "subtasks",
+    "requires_operator_confirmation",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "wyvern.semantic_task.v1"
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "mission_id": {
+      "type": "string"
+    },
+    "task_class": {
+      "type": "string"
+    },
+    "requested_by": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "principal_id",
+        "role"
+      ],
+      "properties": {
+        "principal_id": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    },
+    "grounding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_ref",
+        "grounding_confidence",
+        "ambiguity_status"
+      ],
+      "properties": {
+        "target_ref": {
+          "type": "string"
+        },
+        "grounding_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "ambiguity_status": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "needs_confirmation",
+            "unsafe_to_act"
+          ]
+        }
+      }
+    },
+    "subtasks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "requires_operator_confirmation": {
+      "type": "boolean"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
