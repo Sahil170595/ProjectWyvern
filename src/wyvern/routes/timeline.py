@@ -34,14 +34,21 @@ def register(router: APIRouter, ctx: WyvernContext) -> None:
 
         terminal_state = record.state.value
 
+        if record.archive_ref:
+            timeline_ref = f"{record.archive_ref}/timeline.jsonl"
+            telemetry_ref = f"{record.archive_ref}/telemetry.jsonl"
+        else:
+            timeline_ref = f"memory://{mission_id}/timeline"
+            telemetry_ref = f"memory://{mission_id}/telemetry"
+
         return ReplayArtifact(
             mission_id=mission_id,
             trace_id=record.mission.trace_id,
             mission_hash=mission_h,
             approval_hash=approval_h,
             validation_hash=validation_h,
-            timeline_ref=f"memory://{mission_id}/timeline",
-            telemetry_ref=f"memory://{mission_id}/telemetry",
+            timeline_ref=timeline_ref,
+            telemetry_ref=telemetry_ref,
             summary=ReplaySummary(
                 terminal_state=terminal_state,
                 operator_interventions=operator_interventions,

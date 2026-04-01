@@ -58,3 +58,4 @@ node_modules/
 *.so
 *.dylib
 *.dll
+replay_archives/

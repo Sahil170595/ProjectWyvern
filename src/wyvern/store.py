@@ -4,9 +4,11 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 
 from wyvern.contracts import (
+    IncidentEvent,
     Mission,
     TelemetryEvent,
     TimelineEntry,
+    TraceLink,
     ValidationResult,
 )
 from wyvern.state_machine import MissionState, can_transition
@@ -31,6 +33,9 @@ class MissionRecord:
     telemetry: list[TelemetryEvent] = field(default_factory=list)
     validation_result: ValidationResult | None = None
     idempotency_keys: dict[str, dict] = field(default_factory=dict)
+    trace_links: list[TraceLink] = field(default_factory=list)
+    incidents: list[IncidentEvent] = field(default_factory=list)
+    archive_ref: str | None = None
 
 
 class MissionStore:
@@ -101,6 +106,24 @@ class MissionStore:
         record = self._missions.get(mission_id)
         if record is not None:
             record.idempotency_keys[key] = result
+
+    def append_trace_link(self, mission_id: str, link: TraceLink) -> None:
+        record = self._missions.get(mission_id)
+        if record is not None:
+            record.trace_links.append(link)
+
+    def append_incident(self, mission_id: str, incident: IncidentEvent) -> None:
+        record = self._missions.get(mission_id)
+        if record is not None:
+            record.incidents.append(incident)
+
+    def set_archive_ref(self, mission_id: str, ref: str) -> None:
+        record = self._missions.get(mission_id)
+        if record is not None:
+            record.archive_ref = ref
+
+    def list_missions(self) -> list[MissionRecord]:
+        return list(self._missions.values())
 
     def get_active_for_vehicle(self, vehicle_id: str) -> MissionRecord | None:
         """Return the currently executing mission for a vehicle, if any."""

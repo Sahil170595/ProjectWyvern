@@ -231,3 +231,63 @@ class TimelineEntry(BaseModel):
     actor: str
     trace_id: str
     reason_code: str
+
+
+# --- Phase 2: Chimera Integration ---
+
+class TraceLink(BaseModel):
+    wyvern_trace_id: str
+    chimera_trace_id: str | None = None
+    traceparent: str | None = None
+    linked_at: datetime
+
+
+class IncidentEvent(BaseModel):
+    incident_id: str
+    mission_id: str
+    vehicle_id: str
+    trace_id: str
+    timestamp: datetime
+    severity: str
+    category: str
+    reason_code: str
+    message: str
+    recommended_actions: list[str] = Field(default_factory=list)
+
+
+class ChimeraApprovalRequest(BaseModel):
+    mission_id: str
+    trace_id: str
+    vehicle_id: str
+    mission_type: str
+    requested_by: RequestedBy
+    traceparent: str | None = None
+
+
+class ChimeraApprovalResponse(BaseModel):
+    approval_id: str
+    status: str
+    approved_by: str | None = None
+    approved_at: datetime | None = None
+    reason: str | None = None
+    chimera_trace_id: str | None = None
+
+
+class WyvernEvent(BaseModel):
+    event_type: str
+    mission_id: str | None = None
+    vehicle_id: str | None = None
+    trace_id: str | None = None
+    timestamp: datetime
+    seq: int = 0
+    payload: dict[str, Any] = Field(default_factory=dict)
+
+
+class ControlRoomVehiclePanel(BaseModel):
+    vehicle_id: str
+    vehicle_state: VehicleState | None = None
+    position: Position | None = None
+    health: Health | None = None
+    active_mission_id: str | None = None
+    mission_state: str | None = None
+    last_telemetry_at: datetime | None = None

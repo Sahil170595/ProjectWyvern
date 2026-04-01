@@ -3,6 +3,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from wyvern.config import WyvernSettings
+from wyvern.services.archive_exporter import ArchiveExporter
+from wyvern.services.chimera_client import ChimeraClient
+from wyvern.services.event_emitter import EventEmitter
 from wyvern.services.executor import MissionExecutor
 from wyvern.services.safety_guard import SafetyGuard
 from wyvern.services.validation import ValidationService
@@ -19,3 +22,6 @@ class WyvernContext:
     validation_service: ValidationService
     executor: MissionExecutor
     safety_guard: SafetyGuard
+    chimera_client: ChimeraClient
+    event_emitter: EventEmitter
+    archive_exporter: ArchiveExporter

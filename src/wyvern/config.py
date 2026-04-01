@@ -13,3 +13,10 @@ class WyvernSettings(BaseSettings):
     use_mock_vehicle: bool = True
     telemetry_interval_ms: int = 500
     replay_dir: str = "./replay_artifacts"
+    # Phase 2: Chimera integration
+    chimera_url: str | None = None
+    chimera_timeout_s: float = 5.0
+    archive_dir: str = "./replay_archives"
+    archive_on_completion: bool = True
+    compliance_enabled: bool = True
+    ws_event_buffer_size: int = 100
