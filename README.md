@@ -2,6 +2,8 @@
 
 Constitutional aerial autonomy platform. Governed mission execution for unmanned aerial systems with safety-first authority hierarchies, operator oversight, and cryptographic replay.
 
+A separately authored [browser demo](https://chimeraforge.vercel.app/projects/systems/mission-governance) ports the state graph, validator, safety guard and executor loop, checked against this code running with its mock vehicle, and shows which telemetry faults the executor returns from and which it only logs. It runs no flight controller or simulator.
+
 ## What This Is
 
 Wyvern is the **autonomy plane** in the Chimera ecosystem. It sits between the Chimera control plane (identity, policy, approvals, operator workflows) and the flight controller (PX4/ArduPilot). Wyvern owns mission validation, command arbitration, execution, telemetry normalization, and replay packaging.
